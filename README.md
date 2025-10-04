@@ -10,7 +10,7 @@ This guide outlines how to set up and collaborate effectively on the project usi
 
 ---
 
-### 🧩 1. Set Up Your Development Environment
+### 1. Set Up Your Development Environment
 
 1. Install [**VS Code**](https://code.visualstudio.com/) and ensure **Git** is installed on your system.
 2. Clone the repository by running:
@@ -30,7 +30,7 @@ This guide outlines how to set up and collaborate effectively on the project usi
 
 ---
 
-### 🌿 2. Working With Branches
+### 2. Working With Branches
 
 To keep collaboration smooth and avoid overwriting each other’s work, always create a branch for major or shared edits.
 
@@ -59,7 +59,7 @@ To keep collaboration smooth and avoid overwriting each other’s work, always c
 
 ---
 
-### 🚀 3. Updating the Main Branch
+### 3. Updating the Main Branch
 
 If you’re working directly on `main` (only for minor, low-traffic updates):
 
@@ -74,7 +74,7 @@ Always use a branch for major work (e.g., notebooks, model scripts) to ensure we
 
 ---
 
-### 🔄 4. Keeping Your Local Repo Updated
+### 4. Keeping Your Local Repo Updated
 
 Before starting new work, make sure you have the latest version:
 
