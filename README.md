@@ -19,9 +19,13 @@ This section provides steps for **Emmanuel** (and any future collaborators) to s
 
 3.	Open the cloned folder in VS Code.
 4.	Create or activate the project environment:
-```bash
-conda env create -f environment.yml
-conda activate macro_financial_env
+   ```bash
+   conda env create -f environment.yml
+   conda activate macro_financial_env
+   ```bash
+
+
+
 (Alternatively, use pip install -r requirements.txt if you prefer pip.)
 
 ### 2. Working With Branches
