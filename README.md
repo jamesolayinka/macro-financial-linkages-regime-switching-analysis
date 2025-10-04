@@ -6,7 +6,7 @@ This project models daily and long-term interactions between equity and commodit
 
 ## 💻 Developer Setup & Collaboration Guide
 
-This section provides steps for **Emmanuel** (and any future collaborators) to set up the project locally and contribute effectively using **VS Code** and **Git**.
+This guide outlines how to set up and collaborate effectively on the project using **VS Code** and **Git**.
 
 ---
 
