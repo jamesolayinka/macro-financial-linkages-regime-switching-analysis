@@ -1,0 +1,9 @@
+pandas
+numpy
+yfinance
+alpha_vantage
+nasdaq-data-link
+fredapi
+pyarrow
+requests
+tqdm
