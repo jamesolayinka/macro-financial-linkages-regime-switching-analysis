@@ -86,6 +86,7 @@ def load_data(path: str, parse_dates: Optional[list] = None) -> pd.DataFrame:
         raise ValueError(f"Unsupported file type: {ext}")
 
 
+
 if __name__ == "__main__":
     # Example DataFrame
     df_example = pd.DataFrame({
