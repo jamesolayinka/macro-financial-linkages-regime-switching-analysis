@@ -7,3 +7,5 @@ fredapi
 pyarrow
 requests
 tqdm
+pyarrow
+fastparquet

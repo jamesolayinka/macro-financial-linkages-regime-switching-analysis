@@ -1,5 +1,3 @@
-# file: data_utils.py
-
 import os
 import pandas as pd
 from pathlib import Path
@@ -7,7 +5,6 @@ from typing import Optional
 import logging
 
 # Configure logging
-
 LOG_DIR = "./logs"
 Path(LOG_DIR).mkdir(parents=True, exist_ok=True)
 
@@ -19,7 +16,6 @@ logging.basicConfig(
 )
 
 # Utility functions
-
 def ensure_dirs(*dirs):
     """Ensure directories exist; create them if not."""
     for d in dirs:
@@ -95,8 +91,8 @@ if __name__ == "__main__":
     })
 
     # Paths
-    csv_path = "./data/processed/example.csv"
-    parquet_path = "./data/processed/example.parquet"
+    csv_path = "../data/processed/example.csv"
+    parquet_path = "../data/processed/example.parquet"
 
     # Save
     save_csv(df_example, csv_path)

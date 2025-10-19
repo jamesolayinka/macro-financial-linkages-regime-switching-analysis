@@ -1,0 +1,25 @@
+2025-10-19 17:45:26,297 | INFO | Saved DataFrame to CSV: ./data/processed/example.csv
+2025-10-19 17:45:26,298 | ERROR | Error saving Parquet ./data/processed/example.parquet: Unable to find a usable engine; tried using: 'pyarrow', 'fastparquet'.
+A suitable version of pyarrow or fastparquet is required for parquet support.
+Trying to import the above resulted in these errors:
+ - Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+ - Missing optional dependency 'fastparquet'. fastparquet is required for parquet support. Use pip or conda to install fastparquet.
+2025-10-19 17:48:51,862 | INFO | Saved DataFrame to CSV: ./data/processed/example.csv
+2025-10-19 17:48:51,862 | ERROR | Error saving Parquet ./data/processed/example.parquet: Unable to find a usable engine; tried using: 'pyarrow', 'fastparquet'.
+A suitable version of pyarrow or fastparquet is required for parquet support.
+Trying to import the above resulted in these errors:
+ - Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+ - Missing optional dependency 'fastparquet'. fastparquet is required for parquet support. Use pip or conda to install fastparquet.
+2025-10-19 17:49:42,587 | INFO | Saved DataFrame to CSV: ./data/processed/example.csv
+2025-10-19 17:49:45,291 | INFO | Saved DataFrame to Parquet: ./data/processed/example.parquet
+2025-10-19 17:49:45,301 | INFO | Loaded CSV file: ./data/processed/example.csv
+2025-10-19 17:49:49,829 | INFO | Loaded Parquet file: ./data/processed/example.parquet
+2025-10-19 17:56:40,898 | ERROR | Error saving CSV /data/processed/example.csv: [Errno 30] Read-only file system: '/data'
+2025-10-19 17:58:47,491 | INFO | Saved DataFrame to CSV: data/processed/example.csv
+2025-10-19 17:58:47,577 | INFO | Saved DataFrame to Parquet: data/processed/example.parquet
+2025-10-19 17:58:47,589 | INFO | Loaded CSV file: data/processed/example.csv
+2025-10-19 17:58:47,701 | INFO | Loaded Parquet file: data/processed/example.parquet
+2025-10-19 18:03:20,880 | INFO | Saved DataFrame to CSV: ../data/processed/example.csv
+2025-10-19 18:03:20,964 | INFO | Saved DataFrame to Parquet: ../data/processed/example.parquet
+2025-10-19 18:03:20,976 | INFO | Loaded CSV file: ../data/processed/example.csv
+2025-10-19 18:03:21,086 | INFO | Loaded Parquet file: ../data/processed/example.parquet
