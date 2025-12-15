@@ -1,13 +1,16 @@
 # Parameters, paths, constants
 import os
+from dotenv import load_dotenv
 from dataclasses import dataclass
+
+load_dotenv()
 
 @dataclass
 class Config:
     # API keys: fill or set as env vars
-    ALPHA_VANTAGE_KEY: str = os.getenv('ALPHAVANTAGE_API_KEY', 'YOUR_ALPHA_VANTAGE_KEY')
-    NASDAQ_DATALINK_KEY: str = os.getenv('NASDAQ_DATALINK_KEY', 'YOUR_NASDAQ_DATALINK_KEY')
-    FRED_API_KEY: str = os.getenv('FRED_API_KEY', 'YOUR_FRED_API_KEY')
+    ALPHA_VANTAGE_KEY: str = os.getenv('ALPHAVANTAGE_API_KEY')
+    NASDAQ_DATALINK_KEY: str = os.getenv('NASDAQ_DATALINK_KEY')
+    FRED_API_KEY: str = os.getenv('FRED_API_KEY')
 
     # Storage
     RAW_DATA_DIR: str = os.getenv('RAW_DATA_DIR', '../data/raw')

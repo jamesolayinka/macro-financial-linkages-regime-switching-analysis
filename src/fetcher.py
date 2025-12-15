@@ -12,6 +12,7 @@ import time
 import warnings
 warnings.filterwarnings("ignore")
 from typing import List, Optional
+from config import config
 
 import argparse
 
@@ -21,9 +22,9 @@ class DataCollector:
         self.start = start
         self.end = end
         self.interval = interval
-        self.fred_api_key = "d66f326e45966a51f8799ede96b679e5"
-        self.alpha_vantage_api_key = "2EI9MDGQKVDRD2X9"
-        self.nasdaq_api_key = "vC4umV-rynDZj6mtcotw"
+        self.fred_api_key = config.FRED_API_KEY
+        self.alpha_vantage_api_key = config.ALPHA_VANTAGE_KEY
+        self.nasdaq_api_key = config.NASDAQ_DATALINK_KEY
 
         self.assets = {"equities": ['SPY', 'QQQ', 'DIA', 'IWM'],
                        "commodities": ['GLD', 'SLV', 'USO', 'DBC'],
@@ -168,9 +169,10 @@ if __name__ == "__main__":
     collector = DataCollector(start=args.start, end=args.end, interval=args.interval)
     data = collector.run_full_collection()
 
+    import os
     #save to disk
-    data['prices'].to_csv("data/processed/asset_prices.csv")
-    data['macro'].to_csv("data/processed/macro_data.csv")
+    data['prices'].to_csv(os.path.join(config.PROCESSED_DIR, "asset_prices.csv"))
+    data['macro'].to_csv(os.path.join(config.PROCESSED_DIR, "macro_data.csv"))
 
     # Quick visualization check
     print("\nSample prices (last 5 days):")
