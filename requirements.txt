@@ -9,3 +9,5 @@ requests
 tqdm
 pyarrow
 fastparquet
+python-dotenv
+pandas-datareader
