@@ -92,10 +92,10 @@ class FeatureEngineer:
 
         for window in self.windows:
             rolling_vol = returns.rolling(window, min_periods=window).std() * np.sqrt(252)  # Annualized volatility
-            features[f"{asset}_vol_{window}"] = rolling_vol
+            features[f"{asset}_vol_{window}d"] = rolling_vol
 
             # Expanding window quantiles for volatility regimes
-            vol_expanding = rolling_vol.expanding(min_periods=window*2)
+            vol_expanding = rolling_vol.expanding(min_periods=window)
             q33 = vol_expanding.quantile(0.33)
             q67 = vol_expanding.quantile(0.67)
 
@@ -142,7 +142,7 @@ class FeatureEngineer:
             rolling_corr = r1.rolling(window, min_periods=window).corr(r2)
             features[f"corr_{asset1}_{asset2}_{window}d"] = rolling_corr
 
-            corr_median = rolling_corr.expanding(min_periods=window*2).median()
+            corr_median = rolling_corr.expanding(min_periods=window).median()
             features[f"corr_median_{asset1}_{asset2}_{window}d"] = corr_median
 
             corr_regime = (rolling_corr > corr_median).astype(int)
@@ -269,6 +269,6 @@ if __name__ == "__main__":
         'macro': pd.read_csv('data/processed/macro_data.csv', index_col=0, parse_dates=True)
     }
     fe = FeatureEngineer(data)
-    features = fe.generate_all_features(asset_pairs=[("SPY", "GLD"), ("SPY", "USO")])
+    features = fe.generate_all_features(asset_pairs=[("SPY", "GLD")])
     summary = fe.feature_summary()
     print(summary)
