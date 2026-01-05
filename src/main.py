@@ -1,49 +1,51 @@
-import datetime
-import config
-from preprocess import  write_series_parquet
-from fetcher import fetch_alpha_vantage_daily, fetch_nasdaq_dataset, fetch_yahoo, fetch_fred_series
 import logging
+import os
+import argparse
+from config import config
+from fetcher import DataCollector
+from preprocess import preprocess_macro_data
 
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
-def example_run():
-    ensure_dirs(config.RAW_DATA_DIR, config.PROCESSED_DIR)
+def run_pipeline(start_date: str, end_date: str):
+    """
+    Orchestrates the macro-financial data pipeline:
+    1. Fetch asset and macro data.
+    2. Save raw data to categorized directory structure.
+    3. Preprocess and align macro data.
+    """
+    logger.info(f"Starting pipeline from {start_date} to {end_date}")
 
-    # 1) Equity & commodity tickers (example)
-    equities = ['^GSPC', '^FTSE', 'MSFT']  # S&P500, FTSE 100 (Yahoo tickers), Microsoft
-    commodities = ['CL=F', 'GC=F']  # Crude Oil and Gold futures (Yahoo tickers)
+    # 1. Fetch Data
+    collector = DataCollector(start=start_date, end=end_date)
+    data = collector.run_full_collection()
 
-    start = config.START_DATE
-    end = config.END_DATE
+    if not data:
+        logger.error("Data collection failed. Aborting pipeline.")
+        return
 
-    print('Fetching equities...')
-    eq_prices = fetch_yahoo(equities, start=start, end=end)
-    write_series_parquet(eq_prices, 'equities_yahoo', base_dir=config.RAW_DATA_DIR)
+    # 2. Save Raw Data
+    collector.save_data_to_disk(data)
 
-    print('Fetching commodities...')
-    comm_prices = fetch_yahoo(commodities, start=start, end=end)
-    write_series_parquet(comm_prices, 'commodities_yahoo', base_dir=config.RAW_DATA_DIR)
+    # 3. Preprocess Macro Data
+    raw_macro_dir = os.path.join(config.RAW_DATA_DIR, "macro")
+    output_macro_file = os.path.join(config.PROCESSED_DIR, "macro_processed.csv")
+    
+    logger.info("Starting preprocessing step...")
+    preprocess_macro_data(raw_macro_dir, output_macro_file, start_date=start_date)
 
-    # 2) Macroeconomic series from FRED
-    fred_series = ['CPIAUCSL', 'UNRATE', 'INDPRO']  # CPI, Unemployment rate, Industrial production
-    print('Fetching FRED series...')
-    macro = fetch_fred_series(fred_series, api_key=config.FRED_API_KEY, start=start, end=end)
-    write_series_parquet(macro, 'macro_fred', base_dir=config.RAW_DATA_DIR)
+    logger.info("=== Pipeline Completed Successfully ===")
 
-    # 3) Example: Nasdaq Data Link for continuous futures (replace with actual dataset codes you have access to)
-    # Common Quandl dataset examples (subject to availability): 'CHRIS/CME_CL1' (Crude Oil front-month continuous)
-    try:
-        ndl = fetch_nasdaq_dataset('CHRIS/CME_CL1', start_date=start, end_date=end, api_key=config.NASDAQ_DATALINK_KEY)
-        if not ndl.empty:
-            write_series_parquet(ndl, 'quandl_crude_cl1', base_dir=config.RAW_DATA_DIR)
-    except Exception as e:
-        print('Nasdaq Data Link fetch skipped or failed:', e)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Orchestrate the macro-financial data pipeline.")
+    parser.add_argument('--start', type=str, default=config.START_DATE, help='Start date (YYYY-MM-DD)')
+    parser.add_argument('--end', type=str, default=config.END_DATE, help='End date (YYYY-MM-DD)')
 
-    # 4) Preprocess: align and compute returns
-    prices = align_and_forward_fill({'sp500': eq_prices['^GSPC'] if '^GSPC' in eq_prices.columns else eq_prices.iloc[:,0],
-                                    'crude': comm_prices['CL=F'] if 'CL=F' in comm_prices.columns else comm_prices.iloc[:,0]})
-    returns = compute_log_returns(prices)
-    write_series_parquet(returns, 'daily_returns', base_dir=config.PROCESSED_DIR)
+    args = parser.parse_args()
 
-
-if __name__ == '__main__':
-    example_run()
+    run_pipeline(args.start, args.end)

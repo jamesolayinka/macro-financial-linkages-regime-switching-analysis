@@ -13,15 +13,11 @@ class Config:
     FRED_API_KEY: str = os.getenv('FRED_API_KEY')
 
     # Storage
-    RAW_DATA_DIR: str = os.getenv('RAW_DATA_DIR', 'data/raw')
-    PROCESSED_DIR: str = os.getenv('PROCESSED_DIR', 'data/processed')
+    RAW_DATA_DIR: str = os.getenv('RAW_DATA_DIR', os.path.join(os.getcwd(), 'data', 'raw'))
+    PROCESSED_DIR: str = os.getenv('PROCESSED_DIR', os.path.join(os.getcwd(), 'data', 'processed'))
 
     # Defaults
     START_DATE: str = os.getenv('START_DATE', '2000-01-01')
     END_DATE: str = os.getenv('END_DATE', '2025-12-31')
 
 config = Config()
-print(config.FRED_API_KEY)
-
-
-n_path = 100

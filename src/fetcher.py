@@ -193,6 +193,52 @@ class DataCollector:
         except Exception as e:
             logger.error(f"Error during preprocessing: {e}")
             return {}
+
+    def save_data_to_disk(self, data: dict):
+        """
+        Saves individual tickers, macro series, and consolidated datasets to disk.
+        Expected keys in data: 'prices', 'macro'.
+        """
+        import os
+        if not data:
+            logger.error("No data to save.")
+            return
+
+        # 1. Save individual ticker CSVs in data/raw/{category}/
+        logger.info("Extracting and saving individual ticker CSVs...")
+        prices = data.get('prices')
+        if prices is not None:
+            for category, tickers in self.assets.items():
+                category_dir = os.path.join(config.RAW_DATA_DIR, category)
+                os.makedirs(category_dir, exist_ok=True)
+                for ticker in tickers:
+                    if ticker in prices.columns:
+                        ticker_path = os.path.join(category_dir, f"{ticker}.csv")
+                        prices[ticker].to_csv(ticker_path)
+                        logger.debug(f"Saved {ticker} -> {ticker_path}")
+        
+        # 2. Save individual macro series in data/raw/macro/
+        logger.info("Extracting and saving individual macro CSVs...")
+        macro_all = data.get('macro')
+        if macro_all is not None:
+            macro_dir = os.path.join(config.RAW_DATA_DIR, "macro")
+            os.makedirs(macro_dir, exist_ok=True)
+            for fred_code in self.macro_series.keys():
+                if fred_code in macro_all.columns:
+                    macro_path = os.path.join(macro_dir, f"{fred_code}.csv")
+                    macro_all[fred_code].to_csv(macro_path)
+                    logger.debug(f"Saved {fred_code} -> {macro_path}")
+
+        # 3. Save consolidated/processed data
+        os.makedirs(config.PROCESSED_DIR, exist_ok=True)
+        try:
+            if prices is not None:
+                prices.to_csv(os.path.join(config.PROCESSED_DIR, "consolidated_prices.csv"))
+            if macro_all is not None:
+                macro_all.to_csv(os.path.join(config.PROCESSED_DIR, "consolidated_macro.csv"))
+            logger.info(f"Consolidated data saved to {config.PROCESSED_DIR}")
+        except Exception as e:
+            logger.error(f"Failed to save consolidated data: {e}")
     
     def get_events_dates(self):
         # Placeholder for event dates fetching logic
@@ -230,41 +276,10 @@ if __name__ == "__main__":
     data = collector.run_full_collection()
 
     if data:
-        import os
-        
-        # 1. Save individual ticker CSVs in data/raw/{category}/
-        logger.info("Extracting and saving individual ticker CSVs...")
-        prices = data['prices']
-        for category, tickers in collector.assets.items():
-            category_dir = os.path.join("data", "raw", category)
-            os.makedirs(category_dir, exist_ok=True)
-            for ticker in tickers:
-                if ticker in prices.columns:
-                    ticker_path = os.path.join(category_dir, f"{ticker}.csv")
-                    prices[ticker].to_csv(ticker_path)
-                    logger.debug(f"Saved {ticker} -> {ticker_path}")
-        
-        # 2. Save individual macro series in data/raw/macro/
-        logger.info("Extracting and saving individual macro CSVs...")
-        macro_all = data['macro']
-        macro_dir = os.path.join("data", "raw", "macro")
-        os.makedirs(macro_dir, exist_ok=True)
-        for fred_code in collector.macro_series.keys():
-            if fred_code in macro_all.columns:
-                macro_path = os.path.join(macro_dir, f"{fred_code}.csv")
-                macro_all[fred_code].to_csv(macro_path)
-                logger.debug(f"Saved {fred_code} -> {macro_path}")
-
-        # 3. Save consolidated/processed data
-        os.makedirs(config.PROCESSED_DIR, exist_ok=True)
-        try:
-            data['prices'].to_csv(os.path.join(config.PROCESSED_DIR, "consolidated_prices.csv"))
-            data['macro'].to_csv(os.path.join(config.PROCESSED_DIR, "consolidated_macro.csv"))
-            logger.info(f"Consolidated data saved to {config.PROCESSED_DIR}")
-        except Exception as e:
-            logger.error(f"Failed to save consolidated data: {e}")
-
+        collector.save_data_to_disk(data)
         # Quick tail check
+        prices = data['prices']
+        macro_all = data['macro']
         logger.info(f"\nLast 5 days of GLD (Commodity):\n{prices['GLD'].tail() if 'GLD' in prices.columns else 'N/A'}")
         logger.info(f"\nLast 5 observations of GDP (Macro):\n{macro_all['GDP'].tail() if 'GDP' in macro_all.columns else 'N/A'}")
     else:
